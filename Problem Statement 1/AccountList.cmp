@@ -1,0 +1,98 @@
+<aura:component controller="AccountsController" implements="flexipage:availableForAllPageTypes" access="global">
+	<aura:attribute name="accounts" type="List" />
+    <aura:attribute name="viewAccounts" type="List" />
+    <aura:attribute name="recordId" type="String"/>
+	<aura:dependency resource="markup://force:navigateToURL" type="EVENT"/>	
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <div class="slds-scrollable" style="height:300px;padding:1rem;">    
+    <table class="slds-table slds-table_bordered slds-table_striped slds-table_cell-buffer slds-table_fixed-layout">
+    	<thead>
+        	<tr class="slds-text-heading_label">
+            	<th scope="col"><div class="slds-truncate" title="Name">Account Name</div></th>
+            	<th scope="col"><div class="slds-truncate" title="Account Number">Account Number</div></th>
+            	<th scope="col"><div class="slds-truncate" title="Account Owner">Account Owner</div></th>
+                <th scope="col"><div class="slds-truncate" title="Account Source">Account Source</div></th>
+              	<th scope="col"><div class="slds-truncate" title="Annual Revenue">Annual Revenue</div></th>
+              	<th scope="col"><div class="slds-truncate" title="Type">Type</div></th>
+              	<th scope="col"><div class="slds-truncate" title="Industry">Industry</div></th>
+              	<th scope="col"><div class="slds-truncate" title="Created By">Created By</div></th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Use the Apex model and controller to fetch server side data -->
+              
+        	<aura:iteration items="{!v.accounts}" var="account">
+            	<tr> 
+                	<th scope="row"><div class="slds-truncate" title="{!account.Name}"><a onclick="{!c.handleClick}" id="{!account.Id}">{!account.Name}</a></div></th>
+                    <td><div class="slds-truncate" title="{!account.AccountNumber}">{!account.AccountNumber}</div></td>
+                    <td><div class="slds-truncate" title="{!account.Owner.Name}">{!account.Owner.Name}</div></td>
+                    <td><div class="slds-truncate" title="{!account.AccountSource}">{!account.AccountSource}</div></td>
+                    <td><div class="slds-truncate" title="{!account.AnnualRevenue}">{!account.AnnualRevenue}</div></td>
+                    <td><div class="slds-truncate" title="{!account.Type}">{!account.Type}</div></td>
+                    <td><div class="slds-truncate" title="{!account.Industry}">{!account.Industry}</div></td>
+                    <td><div class="slds-truncate" title="{!account.CreatedBy.Name}">{!account.CreatedBy.Name}</div></td>
+                </tr>
+            </aura:iteration>
+          </tbody>
+       </table>
+    </div>
+    <br></br>
+         
+    <div class="slds-scrollable" style="height:300px;">
+    	<table class="slds-table slds-table_bordered slds-table_cell-buffer">
+        	<thead >
+            	<tr class="slds-text-heading_label">
+                	<th scope="col"><div class="slds-truncate" title="Detail Page" style="text-align:center;"><b>Detail Page</b></div></th>
+  				</tr>
+          	</thead>
+            <tbody id="detailPage">                  
+            	<aura:iteration items="{!v.viewAccounts}" var="accView">
+                	<lightning:recordViewForm recordId="{!accView.Id}" objectApiName="Account"> 
+                    	<lightning:layout class=" slds-wrap custom-layout">
+                        	<lightning:layoutItem size="4" padding="around-small">
+                    			<lightning:outputField fieldName="Name" class="output-element"/>
+                			</lightning:layoutItem>
+                            <lightning:layoutItem size="4" padding="around-small">
+                                <lightning:outputField fieldName="AccountNumber" class="output-element"/>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem size="4" padding="around-small">
+                                <lightning:outputField fieldName="OwnerId" class="output-element"/>
+                            </lightning:layoutItem>
+                             <lightning:layoutItem size="4" padding="around-small">
+                                <lightning:outputField fieldName="AccountSource" class="output-element"/>
+                            </lightning:layoutItem>
+                             <lightning:layoutItem size="4" padding="around-small">
+                                <lightning:outputField fieldName="ParentId" class="output-element"/>
+                            </lightning:layoutItem>        
+                             <lightning:layoutItem size="4" padding="around-small">
+                                <lightning:outputField fieldName="AnnualRevenue" class="output-element"/>
+                            </lightning:layoutItem> 
+                             <lightning:layoutItem size="4" padding="around-small">
+                                <lightning:outputField fieldName="Type" class="output-element"/>
+                            </lightning:layoutItem> 
+                             <lightning:layoutItem size="4" padding="around-small">
+                                <lightning:outputField fieldName="CreatedById" class="output-element"/>
+                            </lightning:layoutItem> 
+                             <lightning:layoutItem size="4" padding="around-small">
+                                <lightning:outputField fieldName="LastModifiedById" class="output-element"/>
+                            </lightning:layoutItem> 
+                             <lightning:layoutItem size="4" padding="around-small">
+                                <lightning:outputField fieldName="Industry" class="output-element"/>
+                            </lightning:layoutItem> 
+                             <lightning:layoutItem size="4" padding="around-small">
+                                <lightning:outputField fieldName="Description" class="output-element"/>
+                            </lightning:layoutItem> 
+                             <lightning:layoutItem size="4" padding="around-small">
+                                <lightning:outputField fieldName="Phone" class="output-element"/>
+                            </lightning:layoutItem>
+                             <lightning:layoutItem size="4" padding="around-small">
+                                <lightning:outputField fieldName="Fax" class="output-element"/>
+                            </lightning:layoutItem>
+                     	</lightning:layout>              
+                	</lightning:recordViewForm>    
+            	</aura:iteration>
+          	</tbody>
+        </table>
+    </div>
+</aura:component>
