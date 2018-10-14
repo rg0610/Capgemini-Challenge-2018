@@ -1,0 +1,77 @@
+public class AccountsController 
+{        
+      @AuraEnabled
+      public static List <Account> getAccounts() 
+      {
+        return [SELECT Id, name, industry, parent.name,createdby.name,LastModifiedBy.name,owner.name,Type, accountnumber,accountsource,AnnualRevenue,description, Fax, Phone FROM Account limit 10];
+      }
+    
+      @AuraEnabled
+      public static List <Account> viewAccounts(String k) 
+      {
+        return [SELECT name, industry, parent.name,createdby.name,LastModifiedBy.name,owner.name,Type, accountnumber,accountsource,AnnualRevenue,description, Fax, Phone FROM Account where Id=:k limit 10];
+      }
+    
+      @AuraEnabled
+      public static void deleteAccounts(String k) 
+      {
+          Account[] doomedAccts = [SELECT Id,name FROM Account where Id=:k];
+		  String msg='';
+          try
+          {
+              delete doomedAccts;
+          }
+          catch(DmlException e)
+          {
+          }
+       }
+    
+     @AuraEnabled
+     public static List < String > deleteMultipleRecords(List < String > lstRecordId) 
+     { 
+  		List < String > oErrorMsg = new List < String > ();
+  		// Query Records for delete where id in lstRecordId [which is pass from client side controller] 
+  		List < Account > lstDeleteRec = [select Id from Account where id IN: lstRecordId];
+ 
+    	Database.DeleteResult[] DR_Dels = Database.delete(lstDeleteRec, false);
+  		// Iterate through each returned result
+  		for (Database.DeleteResult dr: DR_Dels) 
+  		{
+  	 		if (dr.isSuccess()) 
+            {
+      			system.debug('successful delete Account');
+     			// Operation was successful
+   			}
+     		else 
+     		{  
+        		oErrorMsg.add('');
+        		for (Database.Error err: dr.getErrors()) 
+       	 		{
+         			oErrorMsg.add(err.getStatusCode() + ': ' + err.getMessage());
+     			}
+   			}
+  		}
+  		return oErrorMsg;
+   }
+    
+   @AuraEnabled
+   public static void updateMultipleRecords(List < String > lstRecordId, String accSource) 
+   {  
+  		List < String > oErrorMsg = new List < String > ();
+  		// Query Records for delete where id in lstRecordId [which is pass from client side controller] 
+  		List < Account > lstUpdateRec = [select Id,AccountSource from Account where id IN: lstRecordId];
+     	List<Account> accountList = new List<Account>();
+      	for(Account a : lstUpdateRec)
+    	{
+        	a.AccountSource = ''+accSource;
+        	accountList.add(a);
+    	}
+    	Update accountList; 
+   }
+    
+   @AuraEnabled
+   public static List <Account> getsSelected(List < String > lstRecordId)
+   {
+    	return [SELECT name, industry, parent.name,createdby.name,LastModifiedBy.name,owner.name,Type, accountnumber,accountsource,AnnualRevenue,description, Fax, Phone FROM Account where Id IN: lstRecordId];
+	}
+}
