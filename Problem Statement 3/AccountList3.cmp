@@ -1,0 +1,107 @@
+<aura:component controller="AccountsController" implements="force:appHostable,force:lightningQuickAction,force:hasRecordId,flexipage:availableForRecordHome,flexipage:availableForAllPageTypes">
+	<aura:attribute name="accounts" type="List" />
+    <aura:attribute name="viewAccounts" type="List" />
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="selectedCount" type="integer" default="0"/>
+    <aura:attribute name="selectedAccounts" type="List" />
+    
+	<aura:dependency resource="markup://force:createRecord" type="EVENT"/>
+    <aura:dependency resource="markup://force:editRecord" type="EVENT"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <div class="slds-scrollable" style="padding:1rem;"> 
+    	<div class="modal-footer slds-modal__header slds-size_1-of-1">
+        	<div class="forceChangeRecordTypeHeader" >
+            	<ui:button class="slds-button slds-button--brand" label="Update Account Source" press="{!c.openModal}"/>
+            	<ui:button class="slds-button slds-button--brand" label="Delete" press="{!c.deleteSelected}"/>
+            </div>
+        </div> 
+        Selected Contact:{!v.selectedCount}
+    	<table class="slds-table slds-table_bordered slds-table_striped slds-table_cell-buffer slds-table_fixed-layout">
+        	<thead>
+            	<tr class="slds-text-heading_label">
+                
+                  <th scope="col"><div class="slds-truncate" title="Name"><ui:inputCheckbox aura:id="box3" change="{!c.selectAll}"/>&nbsp;&nbsp;Account Name</div></th>
+                  <th scope="col"><div class="slds-truncate" title="Account Number">Account Number</div></th>
+                  <th scope="col"><div class="slds-truncate" title="Account Owner">Account Owner</div></th>
+                  <th scope="col"><div class="slds-truncate" title="Account Source">Account Source</div></th>
+                  <th scope="col"><div class="slds-truncate" title="Annual Revenue">Annual Revenue</div></th>
+                  <th scope="col"><div class="slds-truncate" title="Type">Type</div></th>
+                  <th scope="col"><div class="slds-truncate" title="Industry">Industry</div></th>
+                  <th scope="col"><div class="slds-truncate" title="Created By">Created By</div></th>
+            	</tr>
+           </thead>
+           <tbody>
+            <!-- Use the Apex model and controller to fetch server side data -->
+    
+            <aura:iteration items="{!v.accounts}" var="account">
+            	<tr> 
+                	<th scope="row"><div class="slds-truncate" title="{!account.Name}"><ui:inputCheckbox text="{!account.Id}" aura:id="boxPack" value="" change="{!c.checkboxSelect}"/>&nbsp;&nbsp;{!account.Name}</div></th>
+                    <td><div class="slds-truncate" title="{!account.AccountNumber}">{!account.AccountNumber}</div></td>
+                    <td><div class="slds-truncate" title="{!account.Owner.Name}">{!account.Owner.Name}</div></td>
+                    <td><div class="slds-truncate" title="{!account.AccountSource}">{!account.AccountSource}</div></td>
+                    <td><div class="slds-truncate" title="{!account.AnnualRevenue}">{!account.AnnualRevenue}</div></td>
+                    <td><div class="slds-truncate" title="{!account.Type}">{!account.Type}</div></td>
+                    <td><div class="slds-truncate" title="{!account.Industry}">{!account.Industry}</div></td>
+                    <td><div class="slds-truncate" title="{!account.CreatedBy.Name}">{!account.CreatedBy.Name}</div></td>
+                	
+                </tr>
+              </aura:iteration>
+            </tbody>
+       	  </table>
+    	</div>
+    
+    	<div role="dialog" tabindex="-1" aria-labelledby="header43" aura:id="Modalbox" class="slds-modal slds-modal_large">
+        	<div class="slds-modal__container" style="width: 80%;">
+            	<div class="slds-modal__header">
+                    <b>Update Account Source</b>
+                </div>
+                <div class="slds-modal__content slds-p-around--medium" style="height:500px"> 
+                	<lightning:select name="mySelect" label="Account Source" aura:id="mySelect">
+                    	<option>--None--</option>
+                    	<option>Web</option>
+                    	<option>Phone Inquiry</option>
+                    	<option>Partner Referral</option>
+                    	<option>Purchased List</option>
+                    	<option>Other</option>
+                    </lightning:select>    
+                    <br></br>
+                         
+               		<table class="slds-table slds-table_bordered slds-table_striped slds-table_cell-buffer slds-table_fixed-layout">
+        		    	<thead>
+                    		<tr class="slds-text-heading_label">
+              					<th scope="col"><div class="slds-truncate" title="Name">Account Name</div></th>
+              					<th scope="col"><div class="slds-truncate" title="Account Number">Account Number</div></th>
+              					<th scope="col"><div class="slds-truncate" title="Account Owner">Account Owner</div></th>
+                                <th scope="col"><div class="slds-truncate" title="Account Source">Account Source</div></th>
+                                <th scope="col"><div class="slds-truncate" title="Annual Revenue">Annual Revenue</div></th>
+                                <th scope="col"><div class="slds-truncate" title="Type">Type</div></th>
+                                <th scope="col"><div class="slds-truncate" title="Industry">Industry</div></th>
+                                <th scope="col"><div class="slds-truncate" title="Created By">Created By</div></th>
+                            </tr>
+                       </thead>
+                       <tbody>              
+		   			       <aura:iteration items="{!v.selectedAccounts}" var="acc">
+               			      <tr> 
+                              	<td scope="row"><div class="slds-truncate" title="{!acc.Name}">{!acc.Name}</div></td>
+                              	<td><div class="slds-truncate" title="{!acc.AccountNumber}">{!acc.AccountNumber}</div></td>
+                              	<td><div class="slds-truncate" title="{!acc.Owner.Name}">{!acc.Owner.Name}</div></td>
+                    			<td><div class="slds-truncate" title="{!acc.AccountSource}">{!acc.AccountSource}</div></td>
+                    			<td><div class="slds-truncate" title="{!acc.AnnualRevenue}">{!acc.AnnualRevenue}</div></td>
+                    			<td><div class="slds-truncate" title="{!acc.Type}">{!acc.Type}</div></td>
+                    			<td><div class="slds-truncate" title="{!acc.Industry}">{!acc.Industry}</div></td>
+                    			<td><div class="slds-truncate" title="{!acc.CreatedBy.Name}">{!acc.CreatedBy.Name}</div></td>
+                   			 </tr>
+            			  </aura:iteration>
+                       </tbody>
+                    </table>
+                  </div>
+                  <div class="slds-modal__footer">
+                    <ui:button label="close" press="{!c.closeModal}"  />
+                    <ui:button label="Update" press="{!c.updateSelected}"/>
+                  </div>
+            	</div>
+            </div>
+        	<div class="slds-backdrop " aura:id="Modalbackdrop"></div>    
+  </aura:component>
